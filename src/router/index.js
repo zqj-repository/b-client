@@ -5,6 +5,7 @@ import ArticleDetail from '@/pages/ArticleDetail'
 import Admin from '@/pages/admin/Admin'
 import CategoryManagement from '@/pages/admin/CategoryManagement'
 import ArticleWriter from '@/pages/admin/ArticleWriter'
+import ArticleManagement from '@/pages/admin/ArticleManagement'
 Vue.use(Router)
 
 /**
@@ -40,7 +41,12 @@ export default new Router({
       component: Admin,
       children: [
         {
-          path: 'article-writer',
+          path: 'articles',
+          name: 'Article Management',
+          component: ArticleManagement
+        },
+        {
+          path: 'articles/article-writer',
           name: 'Article Writer',
           component: ArticleWriter
         },

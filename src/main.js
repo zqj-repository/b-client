@@ -5,7 +5,16 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import axios from 'axios';
 
+Vue.prototype.$axios = axios.create({
+  baseURL: 'http://localhost:8080',
+  timeout: 3000,
+  headers: {
+    'X-Custom-Header': 'foobar',
+    'Content-type': 'application/json'
+  }
+});
 Vue.use(ElementUI);
 Vue.config.productionTip = false
 

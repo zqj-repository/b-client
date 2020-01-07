@@ -1,19 +1,20 @@
 <template>
-  <div id="category-management-container">
+  <div id="article-management-container">
     <div id="tabel-container">
       <el-table
         :data="tableData">
         <el-table-column
-          label="编号"
-          prop="id">
+          type="index"
+          width="50">
+        </el-table-column>
         </el-table-column>
         <el-table-column
           label="名称"
-          prop="name">
+          prop="article.title">
         </el-table-column>
         <el-table-column
-          label="描述"
-          prop="description">
+          label="分类"
+          prop="category.name">
         </el-table-column>
         <el-table-column
           align="right">
@@ -37,21 +38,21 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       tableData: []
     }
   },
   created () {
-    this.$axios.get('/category/all').then(res => {
+    this.$axios.get('/article/all').then(res => {
       this.tableData = res.data;
     }).catch(error => {
       console.error(error);
-    });
+    })
   },
   methods: {
     handleEdit(index, row) {
-      console.log(index, row);
+      this.$router.push({name: 'Article Writer', query: {articleId: row.article.id}});
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -60,8 +61,8 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-#category-management-container {
+<style lang='less' scoped>
+#article-management-container {
   width: 100%;
   #tabel-container {
     max-width: 1200px;

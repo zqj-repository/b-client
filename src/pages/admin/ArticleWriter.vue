@@ -1,6 +1,7 @@
 <template>
   <div id="article-writer-container">
     <div class="editor">
+      <!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"> -->
       <input
         class="editor-input editor-title"
         v-model="title"
@@ -11,17 +12,18 @@
         rows="30"
         placeholder="请输入内容"
         v-model="text" />
-      <el-select v-model="value" placeholder="请选择" class="editor-input">
+      <el-select v-model="selectedCategory" placeholder="请选择" class="editor-input">
         <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
+          v-for="item in categoires"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id">
         </el-option>
       </el-select>
       <el-row class="editor-commit-actions editor-input">
-        <el-button type="primary">发发发发</el-button>
+        <el-button type="primary" @click="publish()">发布文章</el-button>
       </el-row>
+      <!-- </el-form> -->
     </div>
   </div>
 </template>
@@ -33,12 +35,40 @@ export default {
     return {
       title: '',
       text: '',
-      options: [
-        {
-          value: 1,
-          label: '分类1'
-        }
-      ]
+      selectedCategory: '',
+      categoires: []
+    }
+  },
+  created () {
+    this.$axios.get('/category/all').then(res => {
+      this.categoires = res.data;
+    }).catch(error => {
+      console.error(error);
+    });
+
+    const articleId = this.$route.query.articleId;
+    if (articleId) {
+      this.$axios.get(`/article/${articleId}`).then(res => {
+        this.title = res.data.title;
+        this.text = res.data.text;
+        this.selectedCategory = res.data.categoryId;
+      }).catch(error => {
+        console.error(error);
+      });
+    }
+  },
+  methods: {
+    publish: function() {
+      this.$axios.post('/article', {
+        title: this.title,
+        categoryId: this.selectedCategory,
+        text: this.text
+      }).then(res => {
+        this.categoires = res.data;
+        console.log(this.categoires);
+      }).catch(error => {
+        console.error(error);
+      });
     }
   }
 }

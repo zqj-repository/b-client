@@ -32,7 +32,7 @@ export default {
       menuOptions: [
         {
           id: '1',
-          name: 'Article Writer',
+          name: 'Article Management',
           title: '文章管理',
           iconClass: 'el-icon-document'
         },
@@ -95,7 +95,7 @@ html, body, #app {
     }
   }
   .el-menu-vertical:not(.el-menu--collapse) {
-    width: 200px; 
+    width: 200px;
   }
   .admin-body {
     .admin-header {
@@ -103,7 +103,7 @@ html, body, #app {
       box-shadow: 2px 0px 5px rgba(0,0,0,0.2);
       .toggle-collapse-icon {
         float: left;
-        height: 45px;
+        height: 40px;
         width: 60px;
         text-align: center;
         font-size: 20px;
