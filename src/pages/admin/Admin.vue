@@ -3,7 +3,7 @@
     <el-menu class="el-menu-vertical"
       :collapse="isCollapse"
       >
-      <el-menu-item v-for="item in menuOptions" :key="item.id" class="menu-item" index="item.id" @click="menuSelect(item.name)">
+      <el-menu-item v-for="item in menuOptions" :key="item.id" class="menu-item aside-menu-item" :index="item.id" @click="menuSelect(item.name)">
         <i :class="[item.iconClass, 'menu-icon']"></i>
         <span slot="title">{{item.title}}</span>
       </el-menu-item>
@@ -31,13 +31,13 @@ export default {
       curMenuTitle: 'Admin',
       menuOptions: [
         {
-          id: 1,
+          id: '1',
           name: 'Article Writer',
           title: '文章管理',
           iconClass: 'el-icon-document'
         },
         {
-          id: 2,
+          id: '2',
           name: 'Category Management',
           title: '分类管理',
           iconClass: 'el-icon-set-up'
@@ -68,12 +68,34 @@ html, body, #app {
 .el-header {
   padding: 0px;
 }
+.el-menu-vertical {
+  background-color: #304156;
+}
+
 #admin-container {
   height: 100%;
-  .el-menu-vertical:not(.el-menu--collapse) {
-    width: 200px;
+  .el-menu-vertical {
     overflow: auto;
     height: 100%;
+    .aside-menu-item.is-active {
+      color: dodgerblue!important;
+      i {
+        color: dodgerblue;
+      }
+    }
+    .aside-menu-item {
+      color: #fff;
+      background-color: #304156;
+      &:hover {
+        background-color: #12181f;
+      }
+      i {
+        color: #fff;
+      }
+    }
+  }
+  .el-menu-vertical:not(.el-menu--collapse) {
+    width: 200px; 
   }
   .admin-body {
     .admin-header {
@@ -84,8 +106,8 @@ html, body, #app {
         height: 45px;
         width: 60px;
         text-align: center;
-        font-size: 30px;
-        padding-top: 15px;
+        font-size: 20px;
+        padding-top: 20px;
         border-right: solid 1px #e6e6e6;
         cursor: pointer;
       }
@@ -95,7 +117,8 @@ html, body, #app {
         padding-left: 16px;
         span {
           font-size:16px;
-          color:dodgerblue;
+          color:#3e3e3e;
+          font-weight: bold;
         }
       }
     }
