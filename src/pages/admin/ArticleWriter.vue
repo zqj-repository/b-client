@@ -2,16 +2,26 @@
   <div id="article-writer-container">
     <div class="editor">
       <input
-        class="input editor-title"
+        class="editor-input editor-title"
         v-model="title"
         placeholder="请输入标题" />
-
       <textarea
-        class="input editor-text"
+        class="editor-input editor-text"
         type="text"
         rows="30"
         placeholder="请输入内容"
         v-model="text" />
+      <el-select v-model="value" placeholder="请选择" class="editor-input">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      <el-row class="editor-commit-actions editor-input">
+        <el-button type="primary">发发发发</el-button>
+      </el-row>
     </div>
   </div>
 </template>
@@ -22,7 +32,13 @@ export default {
   data () {
     return {
       title: '',
-      text: ''
+      text: '',
+      options: [
+        {
+          value: 1,
+          label: '分类1'
+        }
+      ]
     }
   }
 }
@@ -31,12 +47,12 @@ export default {
 <style lang="less" scoped>
 #article-writer-container {
   width: 100%;
+  padding-bottom: 60px;
   .editor {
     width: 900px;
     margin: 0 auto;
-    .input {
+    .editor-input {
       margin-top: 15px;
-      width: 100%;
       outline: none;
     }
     .editor-title {
@@ -46,6 +62,14 @@ export default {
       padding: 10px;
       font-size: 16px;
       width: 98%;
+    }
+    .editor-text {
+      width: 98%;
+      padding: 9px;
+      font-size: 16px;
+    }
+    .editor-commit-actions {
+      margin-top: 16px;
     }
   }
 }
