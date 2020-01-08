@@ -1,5 +1,5 @@
 <template>
-  <div id="category-management-container">
+  <div id="category-board-container">
     <div id="tabel-container">
       <el-table
         :data="tableData">
@@ -61,7 +61,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-#category-management-container {
+#category-board-container {
   width: 100%;
   #tabel-container {
     max-width: 1200px;

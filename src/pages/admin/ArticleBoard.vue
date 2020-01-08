@@ -1,5 +1,5 @@
 <template>
-  <div id="article-management-container">
+  <div id="article-board-container">
     <div id="tabel-container">
       <el-table
         :data="tableData">
@@ -62,7 +62,7 @@ export default {
 </script>
 
 <style lang='less' scoped>
-#article-management-container {
+#article-board-container {
   width: 100%;
   #tabel-container {
     max-width: 1200px;

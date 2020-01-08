@@ -3,9 +3,9 @@ import Router from 'vue-router'
 import Articles from '@/pages/Articles'
 import ArticleDetail from '@/pages/ArticleDetail'
 import Admin from '@/pages/admin/Admin'
-import CategoryManagement from '@/pages/admin/CategoryManagement'
+import CategoryBoard from '@/pages/admin/CategoryBoard'
 import ArticleWriter from '@/pages/admin/ArticleWriter'
-import ArticleManagement from '@/pages/admin/ArticleManagement'
+import ArticleBoard from '@/pages/admin/ArticleBoard'
 Vue.use(Router)
 
 /**
@@ -18,7 +18,6 @@ Vue.use(Router)
  */
 
 export default new Router({
-  mode: 'history',
   routes: [
     {
 			path: '/',
@@ -41,19 +40,19 @@ export default new Router({
       component: Admin,
       children: [
         {
-          path: 'articles',
-          name: 'Article Management',
-          component: ArticleManagement
+          path: 'article-board',
+          name: 'Article Board',
+          component: ArticleBoard
         },
         {
-          path: 'articles/article-writer',
+          path: 'article-writer',
           name: 'Article Writer',
           component: ArticleWriter
         },
         {
-          path: 'category-management',
-          name: 'Category Management',
-          component: CategoryManagement
+          path: 'category-Board',
+          name: 'Category Board',
+          component: CategoryBoard
         }
       ]
     }

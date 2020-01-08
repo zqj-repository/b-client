@@ -1,29 +1,39 @@
 <template>
   <div id="article-writer-container">
     <div class="editor">
-      <!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"> -->
-      <input
-        class="editor-input editor-title"
-        v-model="title"
-        placeholder="请输入标题" />
-      <textarea
-        class="editor-input editor-text"
-        type="text"
-        rows="30"
-        placeholder="请输入内容"
-        v-model="text" />
-      <el-select v-model="selectedCategory" placeholder="请选择" class="editor-input">
-        <el-option
-          v-for="item in categoires"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id">
-        </el-option>
-      </el-select>
-      <el-row class="editor-commit-actions editor-input">
-        <el-button type="primary" @click="publish()">发布文章</el-button>
-      </el-row>
-      <!-- </el-form> -->
+      <el-form :model="article" :rules="rules" ref="articleForm" class="articleForm">
+        <el-form-item prop="title">
+          <el-input
+            class="editor-input editor-title"
+            v-model="article.title"
+            maxlength="50"
+            show-word-limit
+            placeholder="请输入标题" />
+        </el-form-item>
+        <el-form-item prop="text">
+          <el-input
+            class="editor-input editor-text"
+            type="textarea"
+            maxlength="12000"
+            rows="30"
+            show-word-limit
+            placeholder="请输入内容"
+            v-model="article.text" />
+        </el-form-item>
+        <el-form-item prop="selectedCategory">
+          <el-select v-model="article.selectedCategory" placeholder="请选择" class="editor-input">
+            <el-option
+              v-for="item in categoires"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-row class="editor-commit-actions editor-input">
+          <el-button type="primary" @click="publish()">发布文章</el-button>
+        </el-row>
+      </el-form>
     </div>
   </div>
 </template>
@@ -33,10 +43,20 @@ export default {
   name: 'ArticleWriter',
   data () {
     return {
-      title: '',
-      text: '',
-      selectedCategory: '',
-      categoires: []
+      article: {
+        title: '',
+        text: '',
+        selectedCategory: ''
+      },
+      categoires: [],
+      rules: {
+        title: [
+          { required: true, message: '*必填项' }
+        ],
+        selectedCategory: [
+          { required: true, message: '*必选项'}
+        ]
+      }
     }
   },
   created () {
@@ -49,9 +69,9 @@ export default {
     const articleId = this.$route.query.articleId;
     if (articleId) {
       this.$axios.get(`/article/${articleId}`).then(res => {
-        this.title = res.data.title;
-        this.text = res.data.text;
-        this.selectedCategory = res.data.categoryId;
+        this.article.title = res.data.title;
+        this.article.text = res.data.text;
+        this.article.selectedCategory = res.data.categoryId;
       }).catch(error => {
         console.error(error);
       });
@@ -59,10 +79,16 @@ export default {
   },
   methods: {
     publish: function() {
+      this.$refs['articleForm'].validate(valid => {
+        console.log(valid);
+        if (valid) {
+          alert('submit');
+        }
+      });
       this.$axios.post('/article', {
-        title: this.title,
-        categoryId: this.selectedCategory,
-        text: this.text
+        title: this.article.title,
+        categoryId: this.article.selectedCategory,
+        text: this.article.text
       }).then(res => {
         this.categoires = res.data;
         console.log(this.categoires);
@@ -80,22 +106,21 @@ export default {
   padding-bottom: 60px;
   .editor {
     width: 900px;
-    margin: 0 auto;
-    .editor-input {
-      margin-top: 15px;
-      outline: none;
-    }
-    .editor-title {
-      border: none;
-      border-bottom: 1px solid rgba(0,0,0,0.2);
-      border-radius: 0px;
-      padding: 10px;
-      font-size: 16px;
-      width: 98%;
-    }
+    margin: 20px auto;
+    // .editor-input {
+    //   margin-top: 15px;
+    //   outline: none;
+    // }
+    // .editor-title {
+    //   border: none;
+    //   border-bottom: 1px solid rgba(0,0,0,0.2);
+    //   border-radius: 0px;
+    //   padding: 10px;
+    //   font-size: 16px;
+    //   width: 98%;
+    // }
     .editor-text {
-      width: 98%;
-      padding: 9px;
+      width: 100%;
       font-size: 16px;
     }
     .editor-commit-actions {

@@ -16,7 +16,9 @@
         </div>
       </el-header>
       <el-main class="admin-main">
-        <router-view></router-view>
+        <transition name="slide" mode="out-in">
+          <router-view></router-view>
+      </transition>
       </el-main>
     </el-container>
   </el-container>
@@ -32,13 +34,13 @@ export default {
       menuOptions: [
         {
           id: '1',
-          name: 'Article Management',
+          name: 'Article Board',
           title: '文章管理',
           iconClass: 'el-icon-document'
         },
         {
           id: '2',
-          name: 'Category Management',
+          name: 'Category Board',
           title: '分类管理',
           iconClass: 'el-icon-set-up'
         }
@@ -71,7 +73,25 @@ html, body, #app {
 .el-menu-vertical {
   background-color: #304156;
 }
-
+.slide-enter-active,
+.slide-leave-active
+ {
+  transition: all 0.4s ease-out;
+}
+.slide-enter {
+  opacity: 0;
+  transform: translateX(-10%);
+}
+.slide-enter-to {
+  opacity: 1;
+}
+.slide-leave {
+  opacity: 1;
+}
+.slide-leave-to {
+  opacity: 0;
+  transform: translateX(10%);
+}
 #admin-container {
   height: 100%;
   .el-menu-vertical {
@@ -124,6 +144,7 @@ html, body, #app {
     }
     .admin-main {
       padding: 0px;
+      overflow: hidden;
     }
   }
 }
