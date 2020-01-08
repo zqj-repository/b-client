@@ -5,7 +5,7 @@
       >
       <el-menu-item v-for="item in menuOptions" :key="item.id" class="menu-item aside-menu-item" :index="item.id" @click="menuSelect(item.name)">
         <i :class="[item.iconClass, 'menu-icon']"></i>
-        <span slot="title">{{item.title}}</span>
+        <span slot="title">{{routerMap[item.name]}}</span>
       </el-menu-item>
     </el-menu>
     <el-container class="admin-body">
@@ -33,18 +33,27 @@ export default {
       curMenuTitle: 'Admin',
       menuOptions: [
         {
+          id: '0',
+          name: 'Home Board',
+          iconClass: 'el-icon-s-home'
+        },
+        {
           id: '1',
           name: 'Article Board',
-          title: '文章管理',
           iconClass: 'el-icon-document'
         },
         {
           id: '2',
           name: 'Category Board',
-          title: '分类管理',
           iconClass: 'el-icon-set-up'
         }
-      ]
+      ],
+      routerMap: {
+        'Home Board': '首页',
+        'Article Board': '文章管理',
+        'Category Board': '分类管理',
+        'Article Writer': '写作'
+      }
     }
   },
   methods: {
@@ -52,12 +61,12 @@ export default {
       this.isCollapse = !this.isCollapse;
     },
     menuSelect: function (routeName) {
-      this.$router.push({name: routeName});
-      this.menuOptions.forEach(item => {
-        if (item.name === routeName) {
-          this.curMenuTitle = item.title;
-        }
-      });
+      this.$router.push({name: routeName}).catch(err => {});
+    }
+  },
+  watch: {
+    '$route': function(value) {
+      this.curMenuTitle = this.routerMap[value.name];
     }
   }
 }
@@ -137,14 +146,13 @@ html, body, #app {
         padding-left: 16px;
         span {
           font-size:16px;
-          color:#3e3e3e;
-          font-weight: bold;
+          color:#777777;
         }
       }
     }
     .admin-main {
       padding: 0px;
-      overflow: hidden;
+      overflow-x: hidden;
     }
   }
 }

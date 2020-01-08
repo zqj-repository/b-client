@@ -1,5 +1,26 @@
 <template>
   <div id="category-board-container">
+    <div id="category-tabel-top-actions">
+      <el-button 
+        type="primary" 
+        icon="el-icon-edit" 
+        round
+        @click="categoryDialogFormVisible = true">新建分类</el-button>
+      <el-dialog title="新建分类" :visible.sync="categoryDialogFormVisible" v-loading.fullscreen.lock="fullscreenLoading">
+        <el-form :model="newCategoryform">
+          <el-form-item label="分类名称" :label-width="formLabelWidth">
+            <el-input v-model="newCategoryform.name" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="分类描述" :label-width="formLabelWidth">
+            <el-input v-model="newCategoryform.description" autocomplete="off" type="textarea" rows="3"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer">
+          <el-button @click="categoryDialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="submitNewCategory()">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
     <div id="tabel-container">
       <el-table
         :data="tableData">
@@ -39,7 +60,14 @@
 export default {
   data() {
     return {
-      tableData: []
+      tableData: [],
+      categoryDialogFormVisible: false,
+      newCategoryform: {
+        name: '',
+        description: ''
+      },
+      fullscreenLoading: false,
+      formLabelWidth: '120px'
     }
   },
   created () {
@@ -55,6 +83,10 @@ export default {
     },
     handleDelete(index, row) {
       console.log(index, row);
+    },
+    submitNewCategory() {
+      this.fullscreenLoading = true;
+      console.log(this.newCategoryform);
     }
   }
 }
@@ -63,9 +95,13 @@ export default {
 <style lang="less" scoped>
 #category-board-container {
   width: 100%;
+  #category-tabel-top-actions{
+    max-width: 1200px;
+    margin: 10px auto;
+  }
   #tabel-container {
     max-width: 1200px;
-    margin: 30px auto;
+    margin: 10px auto;
   }
 }
 </style>
