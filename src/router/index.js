@@ -52,6 +52,7 @@ export default new Router({
           path: 'artichle-management',
           name: 'Article Management',
           component: BaseLayout,
+          redirect: 'artichle-management/article-list',
           meta: {
             breadcrumbName: '文章管理'
           },
@@ -82,6 +83,7 @@ export default new Router({
           path: 'category-management',
           name: 'Category Management',
           component: BaseLayout,
+          redirect: 'category-management/category-list',
           meta: {
             breadcrumbName: '分类管理'
           },
@@ -100,7 +102,7 @@ export default new Router({
             }
           ]
         },
-        
+
       ]
     }
   ]

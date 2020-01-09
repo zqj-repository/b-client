@@ -1,11 +1,18 @@
 <template>
   <div id="article-board-container">
     <div id="tabel-container">
-      <el-button
-        type="primary"
-        icon="el-icon-edit"
-        round
-        @click="handleNew()">新建文章</el-button>
+      <el-row>
+        <el-button
+          type="primary"
+          icon="el-icon-edit"
+          round
+          @click="handleNew()">新建文章</el-button>
+        <el-button
+            type="primary"
+            icon="el-icon-refresh"
+            round
+            @click="getArticles()">刷新</el-button>
+      </el-row>
       <el-table
         :data="tableData">
         <el-table-column
@@ -48,11 +55,7 @@ export default {
     }
   },
   created () {
-    this.$axios.get('/article/all').then( res => {
-      this.tableData = res.data;
-    }).catch( error => {
-      console.error(error);
-    });
+    this.getArticles();
   },
   methods: {
     handleEdit (index, row) {
@@ -60,9 +63,24 @@ export default {
     },
     handleDelete (index, row) {
       console.log(index, row);
+      this.$axios.delete(`/article/${row.article.id}`).then( res => {
+        if (res.status == 200) {
+          alert('success');
+          this.getArticles();
+        }
+      }).catch( error => {
+        alert('eror');
+      });
     },
     handleNew () {
       this.$router.push({ name: 'Article Writer' });
+    },
+    getArticles () {
+      this.$axios.get('/article/all').then( res => {
+        this.tableData = res.data;
+      }).catch( error => {
+
+      });
     }
   }
 }

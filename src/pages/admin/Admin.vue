@@ -6,7 +6,7 @@
       >
       <el-menu-item v-for="item in menuOptions" :key="item.id" class="menu-item aside-menu-item" :index="item.name" @click="menuSelect(item.name)">
         <i :class="[item.iconClass, 'menu-icon']"></i>
-        <span slot="title">{{item.name}}</span>
+        <span slot="title">{{item.title}}</span>
       </el-menu-item>
     </el-menu>
     <el-container class="admin-body">
@@ -38,16 +38,19 @@ export default {
         {
           id: '0',
           name: 'Home Board',
+          title: '首页',
           iconClass: 'el-icon-s-home'
         },
         {
           id: '1',
           name: 'Article List',
+          title: '文章管理',
           iconClass: 'el-icon-document'
         },
         {
           id: '2',
           name: 'Category List',
+          title: '分类管理',
           iconClass: 'el-icon-set-up'
         }
       ],

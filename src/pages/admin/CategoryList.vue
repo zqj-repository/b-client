@@ -1,18 +1,26 @@
 <template>
   <div id="category-board-container">
     <div id="category-tabel-top-actions">
-      <el-button
-        type="primary"
-        icon="el-icon-edit"
-        round
-        @click="handleNew()">新建分类</el-button>
-      <el-dialog class="category-form-dialog"@closed="resetCategoryForm" :title="formTitle" :visible.sync="categoryDialogFormVisible" v-loading.fullscreen.lock="fullscreenLoading">
+      <el-row>
+        <el-button
+          type="primary"
+          icon="el-icon-edit"
+          round
+          @click="handleNew()">新建分类</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-refresh"
+          round
+          @click="getCategories()">刷新</el-button>
+      </el-row>
+
+      <el-dialog class="category-form-dialog" @closed="resetCategoryForm" :title="formTitle" :visible.sync="categoryDialogFormVisible" v-loading.fullscreen.lock="fullscreenLoading">
         <el-form :model="categoryform" :rules="categoryformRule" ref="categoryformRef">
           <el-input v-model="categoryform.id" autocomplete="off" type="hidden" v-if="!editorForNew"></el-input>
           <el-form-item label="分类名称" :label-width="formLabelWidth" prop="name">
             <el-input v-model="categoryform.name" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="分类描述" :label-width="formLabelWidth">
+          <el-form-item label="分类描述" :label-width="formLabelWidth" prop="description">
             <el-input v-model="categoryform.description" autocomplete="off" type="textarea" rows="3"></el-input>
           </el-form-item>
         </el-form>
@@ -50,9 +58,11 @@
           </template>
           <template slot-scope="scope">
             <el-button
+              v-if="scope.row.defaultCategory !== 'Y'"
               size="mini"
               @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
             <el-button
+              v-if="scope.row.defaultCategory !== 'Y'"
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
@@ -87,14 +97,18 @@ export default {
     }
   },
   created () {
-    this.$axios.get('/category/all').then( res => {
-      this.categoryList = res.data;
-    }).catch(error => {
-      console.error(error);
-    });
+    this.getCategories();
   },
   methods: {
+    getCategories () {
+      this.$axios.get('/category/all').then( res => {
+        this.categoryList = res.data;
+      }).catch(error => {
+
+      });
+    },
     handleEdit(index, row) {
+      console.log(row);
       this.categoryDialogFormVisible = true;
       this.editorForNew = false;
       this.categoryform.id = row.id;
@@ -102,7 +116,11 @@ export default {
       this.categoryform.description = row.description;
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      this.$axios.delete(`/category/${row.id}`).then( res => {
+        if (res.status == 200) {
+          this.getCategories();
+        }
+      });
     },
     handleNew () {
       this.categoryDialogFormVisible = true;
@@ -117,12 +135,13 @@ export default {
             this.categoryform.id = '',
             categoryPromise = this.$axios.post('/category', JSON.stringify(this.categoryform));
           } else {
-            categoryPromise = this.$axios.put('/cateogroy', JSON.stringify(this.categoryform));
+            categoryPromise = this.$axios.put('/category', JSON.stringify(this.categoryform));
           }
           categoryPromise.then(res => {
             if (res.status == 200) {
               this.categoryDialogFormVisible = false;
               this.categorySubmitError = false;
+              this.getCategories();
             }
           }).catch(e => {
             this.categorySubmitError = true;

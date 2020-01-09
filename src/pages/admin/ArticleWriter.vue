@@ -25,8 +25,8 @@
             placeholder="请输入内容"
             v-model="article.text" />
         </el-form-item>
-        <el-form-item prop="selectedCategory">
-          <el-select v-model="article.selectedCategory" placeholder="请选择" class="editor-input">
+        <el-form-item prop="categoryId">
+          <el-select v-model="article.categoryId" placeholder="请选择" class="editor-input">
             <el-option
               v-for="item in categoires"
               :key="item.id"
@@ -49,16 +49,17 @@ export default {
   data () {
     return {
       article: {
+        id: '',
         title: '',
         text: '',
-        selectedCategory: ''
+        categoryId: ''
       },
       categoires: [],
       rules: {
         title: [
           { required: true, message: '*必填项' }
         ],
-        selectedCategory: [
+        categoryId: [
           { required: true, message: '*必选项' }
         ]
       },
@@ -74,16 +75,17 @@ export default {
 
     const articleId = this.$route.query.articleId;
     if (articleId) {
-      this.editorForNew = true; 
+      this.article.id = articleId;
+      this.editorForNew = false;
       this.$axios.get(`/article/${articleId}`).then( res => {
         this.article.title = res.data.title;
         this.article.text = res.data.text;
-        this.article.selectedCategory = res.data.categoryId;
+        this.article.categoryId = res.data.categoryId;
       }).catch(error => {
         console.error(error);
       });
     } else {
-      this.editorForNew = false;
+      this.editorForNew = true;
     }
   },
   methods: {
@@ -98,8 +100,10 @@ export default {
           }
           articlePromise.then(res => {
             this.categoires = res.data;
+            alert('success');
+            this.$router.push({name: 'Article List'});
           }).catch(error => {
-            
+
           });
         }
       });
