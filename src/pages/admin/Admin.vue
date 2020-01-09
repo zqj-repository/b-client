@@ -2,8 +2,9 @@
   <el-container id="admin-container">
     <el-menu class="el-menu-vertical"
       :collapse="isCollapse"
+      :default-active="$route.name"
       >
-      <el-menu-item v-for="item in menuOptions" :key="item.id" class="menu-item aside-menu-item" :index="item.id" @click="menuSelect(item.name)">
+      <el-menu-item v-for="item in menuOptions" :key="item.id" class="menu-item aside-menu-item" :index="item.name" @click="menuSelect(item.name)">
         <i :class="[item.iconClass, 'menu-icon']"></i>
         <span slot="title">{{routerMap[item.name]}}</span>
       </el-menu-item>
@@ -12,7 +13,12 @@
       <el-header class="admin-header">
         <i :class="[isCollapse ? 'el-icon-d-arrow-right' : 'el-icon-d-arrow-left', 'toggle-collapse-icon']" @click="toggleCollapse()"></i>
         <div class="directory-ref">
-          <span>{{curMenuTitle}}</span>
+          <el-breadcrumb separator="/">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item><a href="/">活动管理</a></el-breadcrumb-item>
+            <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+            <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+          </el-breadcrumb>
         </div>
       </el-header>
       <el-main class="admin-main">
@@ -39,34 +45,47 @@ export default {
         },
         {
           id: '1',
-          name: 'Article Board',
+          name: 'Article List',
           iconClass: 'el-icon-document'
         },
         {
           id: '2',
-          name: 'Category Board',
+          name: 'Category List',
           iconClass: 'el-icon-set-up'
         }
       ],
       routerMap: {
         'Home Board': '首页',
-        'Article Board': '文章管理',
-        'Category Board': '分类管理',
-        'Article Writer': '写作'
+        'Article List': '文章管理',
+        'Category List': '分类管理',
+        'Article Writer': '编辑器'
       }
     }
   },
   methods: {
-    toggleCollapse: function () {
+    toggleCollapse () {
       this.isCollapse = !this.isCollapse;
     },
-    menuSelect: function (routeName) {
+    menuSelect (routeName) {
       this.$router.push({name: routeName}).catch(err => {});
     }
   },
   watch: {
-    '$route': function(value) {
-      this.curMenuTitle = this.routerMap[value.name];
+    $route: {
+      handler (value) {
+        this.curMenuTitle = this.routerMap[value.name];
+        let breadcrumbList = [];
+        for (let r of this.$route.matched) {
+          let breadcrumb = {
+            breadcrumbName: r.meta.breadcrumbName,
+            path: r.path
+          };
+          breadcrumbList.push(breadcrumb);
+        }
+        console.log(breadcrumbList);
+      },
+      deep: true,
+      immediate: true
     }
   }
 }

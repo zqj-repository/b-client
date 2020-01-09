@@ -1,6 +1,11 @@
 <template>
   <div id="article-board-container">
     <div id="tabel-container">
+      <el-button
+        type="primary"
+        icon="el-icon-edit"
+        round
+        @click="handleNew()">新建文章</el-button>
       <el-table
         :data="tableData">
         <el-table-column
@@ -43,18 +48,21 @@ export default {
     }
   },
   created () {
-    this.$axios.get('/article/all').then(res => {
+    this.$axios.get('/article/all').then( res => {
       this.tableData = res.data;
-    }).catch(error => {
+    }).catch( error => {
       console.error(error);
-    })
+    });
   },
   methods: {
-    handleEdit(index, row) {
+    handleEdit (index, row) {
       this.$router.push({name: 'Article Writer', query: {articleId: row.article.id}});
     },
-    handleDelete(index, row) {
+    handleDelete (index, row) {
       console.log(index, row);
+    },
+    handleNew () {
+      this.$router.push({ name: 'Article Writer' });
     }
   }
 }
@@ -65,7 +73,7 @@ export default {
   width: 100%;
   #tabel-container {
     max-width: 1200px;
-    margin: 30px auto;
+    margin: 10px auto;
   }
 }
 </style>

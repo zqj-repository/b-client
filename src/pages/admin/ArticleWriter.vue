@@ -2,6 +2,11 @@
   <div id="article-writer-container">
     <div class="editor">
       <el-form :model="article" :rules="rules" ref="articleForm" class="articleForm">
+        <el-input
+            class="editor-input editor-title"
+            v-model="article.id"
+            type="hidden"
+            v-if="!editorForNew" />
         <el-form-item prop="title">
           <el-input
             class="editor-input editor-title"
@@ -54,13 +59,14 @@ export default {
           { required: true, message: '*必填项' }
         ],
         selectedCategory: [
-          { required: true, message: '*必选项'}
+          { required: true, message: '*必选项' }
         ]
-      }
+      },
+      editorForNew: true
     }
   },
   created () {
-    this.$axios.get('/category/all').then(res => {
+    this.$axios.get('/category/all').then( res => {
       this.categoires = res.data;
     }).catch(error => {
       console.error(error);
@@ -68,32 +74,34 @@ export default {
 
     const articleId = this.$route.query.articleId;
     if (articleId) {
-      this.$axios.get(`/article/${articleId}`).then(res => {
+      this.editorForNew = true; 
+      this.$axios.get(`/article/${articleId}`).then( res => {
         this.article.title = res.data.title;
         this.article.text = res.data.text;
         this.article.selectedCategory = res.data.categoryId;
       }).catch(error => {
         console.error(error);
       });
+    } else {
+      this.editorForNew = false;
     }
   },
   methods: {
-    publish: function() {
+    publish () {
       this.$refs['articleForm'].validate(valid => {
-        console.log(valid);
         if (valid) {
-          alert('submit');
+          let articlePromise = null;
+          if (this.editorForNew) {
+            articlePromise = this.$axios.post('/article', JSON.stringify(this.article));
+          } else {
+            articlePromise = this.$axios.put('/article', JSON.stringify(this.article));
+          }
+          articlePromise.then(res => {
+            this.categoires = res.data;
+          }).catch(error => {
+            
+          });
         }
-      });
-      this.$axios.post('/article', {
-        title: this.article.title,
-        categoryId: this.article.selectedCategory,
-        text: this.article.text
-      }).then(res => {
-        this.categoires = res.data;
-        console.log(this.categoires);
-      }).catch(error => {
-        console.error(error);
       });
     }
   }

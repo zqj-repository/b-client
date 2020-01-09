@@ -3,10 +3,11 @@ import Router from 'vue-router'
 import Articles from '@/pages/Articles'
 import ArticleDetail from '@/pages/ArticleDetail'
 import Admin from '@/pages/admin/Admin'
-import CategoryBoard from '@/pages/admin/CategoryBoard'
+import CategoryList from '@/pages/admin/CategoryList'
 import ArticleWriter from '@/pages/admin/ArticleWriter'
-import ArticleBoard from '@/pages/admin/ArticleBoard'
+import ArticleList from '@/pages/admin/ArticleList'
 import HomeBoard from '@/pages/admin/HomeBoard'
+import BaseLayout from '@/components/layout/BaseLayout'
 Vue.use(Router)
 
 /**
@@ -23,7 +24,7 @@ export default new Router({
     {
 			path: '/',
 			name: 'Home',
-			redirect: '/articles'
+			redirect: '/admin'
 		},
     {
       path: '/articles',
@@ -37,30 +38,69 @@ export default new Router({
     },
     {
       path: '/admin',
-      name: 'Admin Home',
       component: Admin,
+      meta: {
+        breadcrumbName: '首页'
+      },
       children: [
         {
           path: '',
           name: 'Home Board',
-          title: '首页面板',
           component: HomeBoard
         },
         {
-          path: 'article-board',
-          name: 'Article Board',
-          component: ArticleBoard
+          path: 'artichle-management',
+          name: 'Article Management',
+          component: BaseLayout,
+          meta: {
+            breadcrumbName: '文章管理'
+          },
+          children: [
+            {
+              path: '',
+              redirect: 'article-list'
+            },
+            {
+              path: 'article-list',
+              name: 'Article List',
+              component: ArticleList,
+              meta: {
+                breadcrumbName: '文章列表'
+              }
+            },
+            {
+              path: 'article-writer',
+              name: 'Article Writer',
+              component: ArticleWriter,
+              meta: {
+                breadcrumbName: '编辑器'
+              }
+            }
+          ]
         },
         {
-          path: 'article-writer',
-          name: 'Article Writer',
-          component: ArticleWriter
+          path: 'category-management',
+          name: 'Category Management',
+          component: BaseLayout,
+          meta: {
+            breadcrumbName: '分类管理'
+          },
+          children: [
+            {
+              path: '',
+              redirect: 'category-list'
+            },
+            {
+              path: 'category-list',
+              name: 'Category List',
+              component: CategoryList,
+              meta: {
+                breadcrumbName: '分类列表'
+              }
+            }
+          ]
         },
-        {
-          path: 'category-Board',
-          name: 'Category Board',
-          component: CategoryBoard
-        }
+        
       ]
     }
   ]
