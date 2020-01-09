@@ -1,12 +1,12 @@
 <template>
   <div id="category-board-container">
     <div id="category-tabel-top-actions">
-      <el-button 
-        type="primary" 
-        icon="el-icon-edit" 
+      <el-button
+        type="primary"
+        icon="el-icon-edit"
         round
         @click="categoryDialogFormVisible = true">新建分类</el-button>
-      <el-dialog title="新建分类" :visible.sync="categoryDialogFormVisible" v-loading.fullscreen.lock="fullscreenLoading">
+      <el-dialog class="category-form-dialog" title="新建分类" :visible.sync="categoryDialogFormVisible" v-loading.fullscreen.lock="fullscreenLoading">
         <el-form :model="newCategoryform">
           <el-form-item label="分类名称" :label-width="formLabelWidth">
             <el-input v-model="newCategoryform.name" autocomplete="off"></el-input>
@@ -15,6 +15,12 @@
             <el-input v-model="newCategoryform.description" autocomplete="off" type="textarea" rows="3"></el-input>
           </el-form-item>
         </el-form>
+        <el-alert
+          :if="categorySubmitError"
+          title="分类信息提交失败，请重试！"
+          type="error"
+          :closable="false">
+        </el-alert>
         <div slot="footer">
           <el-button @click="categoryDialogFormVisible = false">取 消</el-button>
           <el-button type="primary" @click="submitNewCategory()">确 定</el-button>
@@ -25,8 +31,8 @@
       <el-table
         :data="tableData">
         <el-table-column
-          label="编号"
-          prop="id">
+          type="index"
+          width="50">
         </el-table-column>
         <el-table-column
           label="名称"
@@ -67,7 +73,8 @@ export default {
         description: ''
       },
       fullscreenLoading: false,
-      formLabelWidth: '120px'
+      formLabelWidth: '80px',
+      categorySubmitError: false
     }
   },
   created () {
@@ -86,7 +93,19 @@ export default {
     },
     submitNewCategory() {
       this.fullscreenLoading = true;
-      console.log(this.newCategoryform);
+      this.$axios.post('/category', {
+        name: this.newCategoryform.name,
+        description: this.newCategoryform.description
+      }).then(res => {
+        if (res.status == 200) {
+          this.categoryDialogFormVisible = false;
+          this.categorySubmitError = false;
+        }
+      }).catch(e => {
+        this.categorySubmitError = true;
+      }).finally(() => {
+        this.fullscreenLoading = false;
+      });
     }
   }
 }

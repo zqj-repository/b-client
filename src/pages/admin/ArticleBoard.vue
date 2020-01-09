@@ -7,7 +7,6 @@
           type="index"
           width="50">
         </el-table-column>
-        </el-table-column>
         <el-table-column
           label="名称"
           prop="article.title">
