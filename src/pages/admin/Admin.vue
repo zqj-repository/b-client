@@ -6,7 +6,7 @@
       >
       <el-menu-item v-for="item in menuOptions" :key="item.id" class="menu-item aside-menu-item" :index="item.name" @click="menuSelect(item.name)">
         <i :class="[item.iconClass, 'menu-icon']"></i>
-        <span slot="title">{{routerMap[item.name]}}</span>
+        <span slot="title">{{item.name}}</span>
       </el-menu-item>
     </el-menu>
     <el-container class="admin-body">
@@ -14,10 +14,7 @@
         <i :class="[isCollapse ? 'el-icon-d-arrow-right' : 'el-icon-d-arrow-left', 'toggle-collapse-icon']" @click="toggleCollapse()"></i>
         <div class="directory-ref">
           <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item><a href="/">活动管理</a></el-breadcrumb-item>
-            <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-            <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+            <el-breadcrumb-item v-for="item in breadcrumbList" :to="{ path: item.path }" :key="item.path">{{item.breadcrumbName}}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
       </el-header>
@@ -54,12 +51,7 @@ export default {
           iconClass: 'el-icon-set-up'
         }
       ],
-      routerMap: {
-        'Home Board': '首页',
-        'Article List': '文章管理',
-        'Category List': '分类管理',
-        'Article Writer': '编辑器'
-      }
+      breadcrumbList: []
     }
   },
   methods: {
@@ -73,16 +65,14 @@ export default {
   watch: {
     $route: {
       handler (value) {
-        this.curMenuTitle = this.routerMap[value.name];
-        let breadcrumbList = [];
+        this.breadcrumbList = [];
         for (let r of this.$route.matched) {
           let breadcrumb = {
             breadcrumbName: r.meta.breadcrumbName,
             path: r.path
           };
-          breadcrumbList.push(breadcrumb);
+          this.breadcrumbList.push(breadcrumb);
         }
-        console.log(breadcrumbList);
       },
       deep: true,
       immediate: true
