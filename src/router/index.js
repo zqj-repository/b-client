@@ -49,10 +49,10 @@ export default new Router({
           component: HomeBoard
         },
         {
-          path: 'artichle-management',
+          path: 'article-management',
           name: 'Article Management',
           component: BaseLayout,
-          redirect: 'artichle-management/article-list',
+          redirect: 'article-management/article-list',
           meta: {
             breadcrumbName: '文章管理'
           },

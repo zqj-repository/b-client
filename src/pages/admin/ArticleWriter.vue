@@ -1,5 +1,19 @@
 <template>
   <div id="article-writer-container">
+    <el-dialog class="post-success-dialog" :visible.sync="postDialogFormVisible" :close-on-click-modal="false" :show-close="false">
+      <div slot="title">
+        <el-link type="primary" href="/#/admin/article-management">&lt;管理文章</el-link>
+      </div>
+      <div class="post-success-details">
+        <span>{{article.title}}</span>
+        <p>{{article.text}}</p>
+      </div>
+      <el-row slot="footer" type="flex" justify="center" class="post-success-dialog-row">
+        <el-col class="post-success-action" :span="6"><el-link type="success"><i class="el-icon-circle-check"></i> 发布成功并查看文章</el-link></el-col>
+        <el-col class="post-success-action" :span="3"><el-link type="primary" @click="postDialogFormVisible = false">再写一篇</el-link></el-col>
+        <el-col class="post-success-action" :span="3"><el-link type="primary" @click="postDialogFormVisible = false">再写一篇</el-link></el-col>
+      </el-row>
+    </el-dialog>
     <div class="editor">
       <el-form :model="article" :rules="rules" ref="articleForm" class="articleForm">
         <el-input
@@ -36,14 +50,22 @@
           </el-select>
         </el-form-item>
         <el-row class="editor-commit-actions editor-input">
-          <el-button type="primary" @click="publish()">发布文章</el-button>
+          <el-button type="primary" @click="publish()" :loading="publishLoading">发布文章</el-button>
         </el-row>
       </el-form>
+    </div>
+    <div class="preview-box">
+      <span class="preview-title"> {{article.title}}</span>
+      <div class="preview-text typeset" v-html="previewText">
+        
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import marked from 'marked';
+
 export default {
   name: 'ArticleWriter',
   data () {
@@ -63,7 +85,10 @@ export default {
           { required: true, message: '*必选项' }
         ]
       },
-      editorForNew: true
+      editorForNew: true,
+      publishLoading: false,
+      postDialogFormVisible: false,
+      previewText: ''
     }
   },
   created () {
@@ -90,23 +115,30 @@ export default {
   },
   methods: {
     publish () {
-      this.$refs['articleForm'].validate(valid => {
-        if (valid) {
-          let articlePromise = null;
-          if (this.editorForNew) {
-            articlePromise = this.$axios.post('/article', JSON.stringify(this.article));
-          } else {
-            articlePromise = this.$axios.put('/article', JSON.stringify(this.article));
-          }
-          articlePromise.then(res => {
-            this.categoires = res.data;
-            alert('success');
-            this.$router.push({name: 'Article List'});
-          }).catch(error => {
+      this.postDialogFormVisible = true;
+      // this.publishLoading = true;
+      // this.$refs['articleForm'].validate(valid => {
+      //   if (valid) {
+      //     let articlePromise = null;
+      //     if (this.editorForNew) {
+      //       articlePromise = this.$axios.post('/article', JSON.stringify(this.article));
+      //     } else {
+      //       articlePromise = this.$axios.put('/article', JSON.stringify(this.article));
+      //     }
+      //     articlePromise.then(res => {
+      //       this.categoires = res.data;
+      //       alert('success');
+      //       this.$router.push({name: 'Article List'});
+      //     }).catch(error => {
 
-          });
-        }
-      });
+      //     });
+      //   }
+      // });
+    }
+  },
+  watch: {
+    'article.text' () {
+      this.previewText = marked(this.article.text);
     }
   }
 }
@@ -117,26 +149,54 @@ export default {
   width: 100%;
   padding-bottom: 60px;
   .editor {
-    width: 900px;
-    margin: 20px auto;
-    // .editor-input {
-    //   margin-top: 15px;
-    //   outline: none;
-    // }
-    // .editor-title {
-    //   border: none;
-    //   border-bottom: 1px solid rgba(0,0,0,0.2);
-    //   border-radius: 0px;
-    //   padding: 10px;
-    //   font-size: 16px;
-    //   width: 98%;
-    // }
+    width: 50%;
+    margin: 20px 1%;
+    min-width: 500px;
+    float: left;
     .editor-text {
       width: 100%;
       font-size: 16px;
     }
     .editor-commit-actions {
       margin-top: 16px;
+    }
+  }
+  .preview-box {
+    width: 46%;
+    float: left;
+    padding: 0px 1%;
+    font-size: 16px;
+    .preview-title {
+      display: block;
+      margin-top: 34px;
+      height: 20px;
+      text-align: bottom;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .preview-text {
+      overflow-y: scroll;
+      margin-top: 30px;
+      max-height: 700px;
+    font-size: 20px;
+    }
+  }
+  .post-success-action {
+    text-align: center;
+  }
+  .post-success-details {
+    background-color: #F5F6F7;
+    padding: 6px;
+    span {
+      font-size: 18px;
+      color: #474747;
+      margin-bottom: 8px;
+    }
+    p {
+      font-size: 14px;
+      color: #999999;
+      letter-spacing: 1px;
+      margin: 8px 0;
     }
   }
 }
